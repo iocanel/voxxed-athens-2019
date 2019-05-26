@@ -1,5 +1,7 @@
 package org.acme;
 
+import java.util.concurrent.CompletionStage;
+
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -19,7 +21,7 @@ public class Endpoint {
     
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
+    public CompletionStage<String> hello() {
         return greetingService.greet();
     }
 

@@ -51,6 +51,28 @@ From the shell run the application in dev mode:
 
     mvn compile quarkus:dev
 
+Perform changes to the greeting message and demostrate how dev mode performs changes live, with no rebuilding involved.
+From this point on, either align unit tests, or toggle unit tests off `-DskipTests`.
+
+Demonstrate native build.
+
+    mvn clean package -Pnative
+    
+Run the native application.
+
+
+    ./target/hello-world-0.1-SNAPSHOT-runner
+    
+While the application is still running, from another shell check memory consumption:
+
+    ps ax -o pid,rss,command | numfmt --header --from-unit=1024 --to=iec --field 2 | grep -v grep | grep hello
+    
+At this point the result should be somewhere around `16M` to `19M`.
+
+#### Externalize message
+
+
+
 
 ## Milestones
-
+- [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)

@@ -151,6 +151,33 @@ Create a new Panache Entity `PanacheGreeting`.
 Create a new `PanacheGreetingService` to demonstrate the panche style of orm.
 Inject the service into hello and create a new endpoint.
 
+#### Deploy to Kubernetes
+The application can be deployed as is without deploying and configuring a database on Kubernetes.
+The simple `/hello` and `/hello/stream` endpoint will still work without issues (The ones that do require a database, of course won't work)
+
+Add the `kubernetes` extension.
+
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-kubernets"
+    
+Build the application.
+
+    mvn clean install
+
+Perform docker build and push (to dockerhub).
+
+     docker build -f src/main/docker/Dockerfile.native -t iocanel/hello-world:0.1-SNAPSHOT .
+     docker push iocanel/hello-world:0.1-SNAPSHOT
+
+Open the generated manifest `target/wiring-classes/META-INF/kubernetes/kubernetes.yml`.
+
+Apply the generated resources.
+
+    kubectl create -f target/wiring-classes/META-INF/kubernetes/kubernetes.yml
+    
+Expose the application to the real world, either by `Ingress` or `Route` (if used on Openshift).
+
+Show the `/hello` is working as expected.
 
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
@@ -159,3 +186,5 @@ Inject the service into hello and create a new endpoint.
 - [Hello World with Reactive Postgres](https://github.com/iocanel/voxxed-athens-2019/tree/04-hello-world-with-reactive-postgres)
 - [Hello World with ORM](https://github.com/iocanel/voxxed-athens-2019/tree/05-hello-world-with-orm)
 - [Hello World with Panache](https://github.com/iocanel/voxxed-athens-2019/tree/06-hello-world-with-panache)
+- [Hello World on Kubernetes](https://github.com/iocanel/voxxed-athens-2019/tree/07-hello-world-on-kubernetes)
+

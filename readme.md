@@ -111,7 +111,7 @@ From the command line add the reacitve stream operators extension.
 
     mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-reactive-pg-client"
     
-Ensure that posgres is up an running (see  [Assets](#Assets). Describe the greetings table.
+Ensure that posgres is up an running (see [Assets](#Assets)). Describe the greetings table.
 
 Create a `PgGreetingService` that injects a `io.reactiverse.axle.pgclient.PgPool`.
 Create a method that runs a simple query like `selet * from greeting where lang='it'`.
@@ -158,7 +158,7 @@ The simple `/hello` and `/hello/stream` endpoint will still work without issues 
 Add the `kubernetes` extension.
 
 
-    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-kubernets"
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-kubernetes"
     
 Build the application.
 
@@ -299,7 +299,54 @@ Run the application
 
      mvn compile quarkus:dev
      
-Open localhost:8080/hello and watch the tweets as they appear.     
+Open localhost:8080/hello and watch the tweets as they appear.
+
+
+#### Remote dev mode on Kuberentes
+
+Open the hello-world application.
+
+Add the `undertow-websockets` extension.
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-undertow-websockets"
+    
+Open the `application.propeties` so that we can specify the live reload password.
+
+    quarkus.live-reload.password=secret
+    
+    
+Create `Dockerfile.remote` so that we have a container capable of building quarkus that includes project sources:
+
+    FROM fabric8/java-centos-openjdk8-jdk
+    ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+    ENV AB_ENABLED=jmx_exporter
+    COPY mvnw /deployments/mvnw
+    COPY .mvn /deployments/.mvn
+    COPY src /deployments/src
+    COPY pom.xml /deployments/pom.xml
+
+    WORKDIR /deployments
+    USER root
+    RUN chown -R jboss src
+    USER jboss
+    ENTRYPOINT [ "./mvnw", "compile", "quarkus:dev" ]
+    
+Build the Dockerfile:
+
+     docker build -f src/main/docker/Dockerfile.remote -t iocanel/hello-world:0.1-SNAPSHOT .
+
+Push the image:
+
+     docker push iocanel/hello-world:0.1-SNAPSHOT
+
+Edit the deploynent and change image pull policy from `IfNotPresent` to `Always`.
+
+Once the application running on kubernets is restarted. 
+From the project run `remote-dev` and pass the url of the application.
+
+    mvn quarkus:remote-dev -Dquarkus.live-reload.url=http://hello-world-iocanel.195.201.87.126.nip.io
+    
+Perform changes to the message and demonstrate them being applied live!
  
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
@@ -311,4 +358,6 @@ Open localhost:8080/hello and watch the tweets as they appear.
 - [Hello World on Kubernetes](https://github.com/iocanel/voxxed-athens-2019/tree/07-hello-world-on-kubernetes)
 - [Hello Cloud with Rest Client and Fault Tolerance](https://github.com/iocanel/voxxed-athens-2019/tree/08-hello-cloud-with-rest-client-and-fault-tolernace)
 - [Tweet Writer (Kafka)](https://github.com/iocanel/voxxed-athens-2019/tree/09-tweet-kafka-writer)
+- [Tweet Reader (Kafka)](https://github.com/iocanel/voxxed-athens-2019/tree/10-tweet-kafka-reader)
+- [Remote Dev Mode](https://github.com/iocanel/voxxed-athens-2019/tree/11-remote-dev)
 

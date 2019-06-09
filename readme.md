@@ -213,6 +213,67 @@ Run the application.
 Show normal request.
 Scale down to 0 the hello-world application to demonstrate the fallback.
 
+#### Create a twiter to kafka application
+Create a new application, say `tweet-writer`.
+
+    mvn io.quarkus:quarkus-maven-plugin:0.16.1:create -DprojectGroupId=org.acme -DprojectArtifactId=tweet-writer -DprojectVersion=0.1-SNAPSHOT
+    
+Open the project.
+
+Add the `smallrye-reactive-messaging-kafka` extension.
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-reactive-messaging-kafka"
+    
+    
+Manually add `twitter4j` dependency:
+
+      <dependency>
+         <groupId>org.twitter4j</groupId>
+         <artifactId>twitter4j-stream</artifactId>
+         <version>4.0.6</version>
+      </dependency>
+
+Create a application scoped class, that defines a method that returns a `Publisher<String>`.
+The method should use `Flowable.create` to caputre the tweets of interest.
+
+    @Outgoing("out-tweet")
+    public Publisher<String> stream() {
+        return Flowable.create(s -> {
+            final TwitterStream twitter = new TwitterStreamFactory().getInstance();
+            twitter.addListener(new StatusAdapter() {
+                @Override
+                public void onStatus(Status status) {
+                    System.out.println(status.getText());
+                    s.onNext(status.getText());
+                }
+            });
+            twitter.filter(filter);
+        }, BackpressureStrategy.DROP);
+    }
+
+Where `filter` is an externalized property with the twitter fileter (e.g. `QuarkusIO`).
+
+Open `application.propeties` to define the `out-tweet` sink.
+
+    smallrye.messaging.sink.out-tweet.type=io.smallrye.reactive.messaging.kafka.Kafka
+    smallrye.messaging.sink.out-tweet.topic=tweets
+    smallrye.messaging.sink.out-tweet.bootstrap.servers=localhost:9092
+    smallrye.messaging.sink.out-tweet.key.serializer=org.apache.kafka.common.serialization.StringSerializer
+    smallrye.messaging.sink.out-tweet.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+    smallrye.messaging.sink.out-tweet.acks=1
+
+Create a new resource `twitter4j.properties` and specify the twitter oauth configuration.
+
+    oauth.consumerKey=xxxx
+    oauth.consumerSecret=xxxx
+    oauth.accessToken=xxxx
+    oauth.accessTokenSecret=xxxx
+    
+Ensure that kafka is running (see [Assets](#Assets)).
+Run the application preferably overriding the port (as we are going to start multiple apps).
+
+
+     mvn compile quarkus:dev -Dquarkus.http.port=8081 -Dtwitter.filter=QuarkusIO
 
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
@@ -223,4 +284,5 @@ Scale down to 0 the hello-world application to demonstrate the fallback.
 - [Hello World with Panache](https://github.com/iocanel/voxxed-athens-2019/tree/06-hello-world-with-panache)
 - [Hello World on Kubernetes](https://github.com/iocanel/voxxed-athens-2019/tree/07-hello-world-on-kubernetes)
 - [Hello Cloud with Rest Client and Fault Tolerance](https://github.com/iocanel/voxxed-athens-2019/tree/08-hello-cloud-with-rest-client-and-fault-tolernace)
+- [Tweet Writer (Kafka)](https://github.com/iocanel/voxxed-athens-2019/tree/09-tweet-kafka-writer)
 

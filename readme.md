@@ -84,6 +84,14 @@ Run the container.
     
 Show that the application is running as expected.
     
+#### Externalize Properties
+
+Optinally, create a `GreetingService` and inject it into `Hello` resource.
+Add a `@ConfigProperty(name="message")` annotation onto a String property and crate a method that returns that.
+In the `Hello` resource, change the hello method so that it calls this method.
+Open `application.properties` and add the value for `message`.
+
 
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
+- [Hello World with Externalized Property](https://github.com/iocanel/voxxed-athens-2019/tree/02-hello-world-with-externalized-property)

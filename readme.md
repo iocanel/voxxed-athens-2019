@@ -92,6 +92,20 @@ In the `Hello` resource, change the hello method so that it calls this method.
 Open `application.properties` and add the value for `message`.
 
 
+#### Streaming 
+
+From the command line add the reacitve stream operators extension.
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-reactive-streams-operators"
+    
+    
+Create a `StreamingGreetingService` and inject it into `Hello` resource.
+Add a String array with greeing messages.
+Create a method that returns a `Publisher<String>` and internally uses `Flowable.interval` to return a random greeing message at the specified interval.
+Back to the `Hello` resource. Create a method like `hello` say `stream` that uses a differnt path, say `@Path("/stream")` and insted of `TEXT_PLAIN` return `SERVER_SENT_EVENTS`.
+This method should now delegate to the injected `StreamingGreetingService`.
+
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
 - [Hello World with Externalized Property](https://github.com/iocanel/voxxed-athens-2019/tree/02-hello-world-with-externalized-property)
+- [Hello World with Reactive](https://github.com/iocanel/voxxed-athens-2019/tree/03-hello-world-with-reactive)

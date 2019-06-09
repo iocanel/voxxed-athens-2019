@@ -179,6 +179,41 @@ Expose the application to the real world, either by `Ingress` or `Route` (if use
 
 Show the `/hello` is working as expected.
 
+#### Use the rest-client to talk to the application we just created
+
+Create a new application, say `hello-cloud`.
+
+    mvn io.quarkus:quarkus-maven-plugin:0.16.1:create -DprojectGroupId=org.acme -DprojectArtifactId=hello-cloud -DprojectVersion=0.1-SNAPSHOT -Dendpoint=/hello -DclassName=org.acme.Hello
+
+The application is meant to talk with `hello-world` that was deployed on kubernetes (in the previous step).
+
+We are going to need the rest-client and fault tolerance extnesions from smallrye.
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-rest-client"
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-fault-tolerance"
+
+Create a new `HelloRestClient` that has a hello method with path `/hello` (same as our `hello-world` application).
+In the `RegisterRestClient` annotation pass the `baseUri` pointing to the `hello-world` application.
+
+For example:
+
+    @RegisterRestClient(baseUri="http://hello-world-iocanel.195.201.87.126.nip.io")
+    
+Explain how to externalize this to `application.properties`.
+
+Create a `HelloRestService` that inject the rest client.
+Add a greet method to the service that delegates to the rest client.
+Add the `@Fallback` annotation on the method and also add a fallback method.
+Inject and use the servcie in the `Hello.java` (as we've done many times).
+
+Run the application.
+
+     mvn clean compile quarkus:dev
+     
+Show normal request.
+Scale down to 0 the hello-world application to demonstrate the fallback.
+
+
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
 - [Hello World with Externalized Property](https://github.com/iocanel/voxxed-athens-2019/tree/02-hello-world-with-externalized-property)
@@ -187,4 +222,5 @@ Show the `/hello` is working as expected.
 - [Hello World with ORM](https://github.com/iocanel/voxxed-athens-2019/tree/05-hello-world-with-orm)
 - [Hello World with Panache](https://github.com/iocanel/voxxed-athens-2019/tree/06-hello-world-with-panache)
 - [Hello World on Kubernetes](https://github.com/iocanel/voxxed-athens-2019/tree/07-hello-world-on-kubernetes)
+- [Hello Cloud with Rest Client and Fault Tolerance](https://github.com/iocanel/voxxed-athens-2019/tree/08-hello-cloud-with-rest-client-and-fault-tolernace)
 

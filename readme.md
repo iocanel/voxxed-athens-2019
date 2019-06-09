@@ -124,8 +124,28 @@ In the application.properties the following properties are required:
     quarkus.datasource.username=root
     quarkus.datasource.password=password 
 
+#### Use hibernate ORM
+NOTE: Hibernate ORM conflicts with reactive postgres, so start by removing that dependency and code.
+
+Add `hibernate-orm` and `jdbc-postgres` extensions.
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-hibernate-orm"
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-jdbc-postgresql"
+    
+Create a greeing entity with `greeting` and `lang` fields.
+Create a `JpaGreetingService` that injects the entity manager and performs a query by id.
+
+    quarkus.datasource.url=jdbc:postgresql:demo
+    quarkus.datasource.driver=org.postgresql.Driver
+    quarkus.datasource.username=root
+    quarkus.datasource.password=password
+
+Finally, inject the `JpaGreetingService` into `Hello` and create a new endpoint to show how it works.
+    
+
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
 - [Hello World with Externalized Property](https://github.com/iocanel/voxxed-athens-2019/tree/02-hello-world-with-externalized-property)
 - [Hello World with Reactive](https://github.com/iocanel/voxxed-athens-2019/tree/03-hello-world-with-reactive)
 - [Hello World with Reactive Postgres](https://github.com/iocanel/voxxed-athens-2019/tree/04-hello-world-with-reactive-postgres)
+- [Hello World with ORM](https://github.com/iocanel/voxxed-athens-2019/tree/05-hello-world-with-orm)

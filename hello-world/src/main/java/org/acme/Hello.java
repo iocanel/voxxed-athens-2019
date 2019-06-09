@@ -22,6 +22,9 @@ public class Hello {
     @Inject
     PgGreetingService pg;
 
+    @Inject
+    JpaGreetingService jpa;
+    
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
@@ -40,5 +43,11 @@ public class Hello {
     @Produces(MediaType.TEXT_PLAIN)
     public CompletionStage<String> pg() {
         return pg.greet();
+    }
+    @GET
+    @Path("/jpa")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String jpa() {
+        return jpa.greet();
     }
 }

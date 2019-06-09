@@ -105,7 +105,27 @@ Create a method that returns a `Publisher<String>` and internally uses `Flowable
 Back to the `Hello` resource. Create a method like `hello` say `stream` that uses a differnt path, say `@Path("/stream")` and insted of `TEXT_PLAIN` return `SERVER_SENT_EVENTS`.
 This method should now delegate to the injected `StreamingGreetingService`.
 
+#### Use reactive postgres client.
+
+From the command line add the reacitve stream operators extension.
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-reactive-pg-client"
+    
+Ensure that posgres is up an running (see  [Assets](#Assets). Describe the greetings table.
+
+Create a `PgGreetingService` that injects a `io.reactiverse.axle.pgclient.PgPool`.
+Create a method that runs a simple query like `selet * from greeting where lang='it'`.
+From the result get the `greeting` column and return that. The method should return `CompletionStage<String>`.
+As before inject the `PgGreetingService` into hello and create a different endpoint.
+In the application.properties the following properties are required:
+
+    quarkus.datasource.url=vertx-reactive:postgresql://:5432/demo
+    quarkus.datasource.driver=org.postgresql.Driver
+    quarkus.datasource.username=root
+    quarkus.datasource.password=password 
+
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
 - [Hello World with Externalized Property](https://github.com/iocanel/voxxed-athens-2019/tree/02-hello-world-with-externalized-property)
 - [Hello World with Reactive](https://github.com/iocanel/voxxed-athens-2019/tree/03-hello-world-with-reactive)
+- [Hello World with Reactive Postgres](https://github.com/iocanel/voxxed-athens-2019/tree/04-hello-world-with-reactive-postgres)

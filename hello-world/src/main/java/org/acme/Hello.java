@@ -8,6 +8,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.reactivestreams.Publisher;
 
+import java.util.concurrent.CompletionStage;
+
 @Path("/hello")
 public class Hello {
 
@@ -16,6 +18,9 @@ public class Hello {
     
     @Inject
     StreaminGreetingService stream;
+
+    @Inject
+    PgGreetingService pg;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -28,5 +33,12 @@ public class Hello {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public Publisher<String> stream() {
         return stream.greet();
+    }
+
+    @GET
+    @Path("/pg")
+    @Produces(MediaType.TEXT_PLAIN)
+    public CompletionStage<String> pg() {
+        return pg.greet();
     }
 }

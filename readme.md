@@ -69,10 +69,21 @@ While the application is still running, from another shell check memory consumpt
     
 At this point the result should be somewhere around `16M` to `19M`.
 
-#### Externalize message
+#### Fun with docker
 
+To emphasize that native binaries need no jvm, change the base image of `Dockerfile.native` to use a minimal glibc based image.
+`debian:jessie-slim` is a good example.
 
+Build the image.
 
+     docker build -f src/main/docker/Dockerfile.native -t iocanel/hello-world:0.1-SNAPSHOT .
+     
+Run the container.
+
+    docker run -it -p 8080:8080 iocanel/hello-world:0.1-SNAPSHOT
+    
+Show that the application is running as expected.
+    
 
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)

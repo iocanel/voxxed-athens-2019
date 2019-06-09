@@ -25,6 +25,9 @@ public class Hello {
     @Inject
     JpaGreetingService jpa;
     
+    @Inject
+    PanacheGreetingService panache;
+
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
@@ -49,5 +52,11 @@ public class Hello {
     @Produces(MediaType.TEXT_PLAIN)
     public String jpa() {
         return jpa.greet();
+    }
+    @GET
+    @Path("/panache")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String panache() {
+        return panache.greet();
     }
 }

@@ -142,6 +142,15 @@ Create a `JpaGreetingService` that injects the entity manager and performs a que
 
 Finally, inject the `JpaGreetingService` into `Hello` and create a new endpoint to show how it works.
     
+#### Use hibernate ORM Panache
+Add `hibernate-orm-panace` extensions.
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-hibernate-orm-panache"
+ 
+Create a new Panache Entity `PanacheGreeting`.
+Create a new `PanacheGreetingService` to demonstrate the panche style of orm.
+Inject the service into hello and create a new endpoint.
+
 
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
@@ -149,3 +158,4 @@ Finally, inject the `JpaGreetingService` into `Hello` and create a new endpoint 
 - [Hello World with Reactive](https://github.com/iocanel/voxxed-athens-2019/tree/03-hello-world-with-reactive)
 - [Hello World with Reactive Postgres](https://github.com/iocanel/voxxed-athens-2019/tree/04-hello-world-with-reactive-postgres)
 - [Hello World with ORM](https://github.com/iocanel/voxxed-athens-2019/tree/05-hello-world-with-orm)
+- [Hello World with Panache](https://github.com/iocanel/voxxed-athens-2019/tree/06-hello-world-with-panache)

@@ -275,6 +275,32 @@ Run the application preferably overriding the port (as we are going to start mul
 
      mvn compile quarkus:dev -Dquarkus.http.port=8081 -Dtwitter.filter=QuarkusIO
 
+#### Create a kafka to browser application to display tweets via SSE.
+Create a new application, say `tweet-reader`.
+
+    mvn io.quarkus:quarkus-maven-plugin:0.16.1:create -DprojectGroupId=org.acme -DprojectArtifactId=tweet-reader -DprojectVersion=0.1-SNAPSHOT -Dendpoint=/hello -DclassName=org.acme.Hello
+    
+Open the project.
+
+Add the `smallrye-reactive-messaging-kafka` extension.
+
+    mvn quarkus:add-extension -Dextensions="io.quarkus:quarkus-smallrye-reactive-messaging-kafka"
+    
+Open the `Hello` resource and Inject the source stream:
+
+    @Inject
+    @Stream("in-tweet")
+    Publiser<String> tweets;
+    
+    
+Create a method that produces server sent events and just return the `tweets`.
+
+Run the application 
+
+     mvn compile quarkus:dev
+     
+Open localhost:8080/hello and watch the tweets as they appear.     
+ 
 ## Milestones
 - [Hello World](https://github.com/iocanel/voxxed-athens-2019/tree/01-hello-world)
 - [Hello World with Externalized Property](https://github.com/iocanel/voxxed-athens-2019/tree/02-hello-world-with-externalized-property)
